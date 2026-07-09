@@ -22,4 +22,13 @@ public class StudentController {
     public  ResponseEntity<StudentRegistrationDto> saveDetails(@RequestBody StudentRegistrationDto student){
         return ResponseEntity.ok(studentService.saveDetails(student));
     }
+    @PutMapping("update/{id}")
+    public ResponseEntity<StudentRegistrationDto> updateDetails(@PathVariable String id, @RequestBody StudentRegistrationDto student){
+        return ResponseEntity.ok(studentService.updateDetails(id,student));
+    }
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteDetails(@PathVariable String id){
+        studentService.deleteDetails(id);
+        return ResponseEntity.noContent().build();
+    }
 }

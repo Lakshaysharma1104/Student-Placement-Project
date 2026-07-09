@@ -17,14 +17,6 @@ public class StudentDetailsService {
 
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
-//        StudentRegistrationDto studentRegistration = new StudentRegistrationDto();
-//        studentRegistration.setId(student.getId());
-//        studentRegistration.setStudentName(student.getName());
-//        studentRegistration.setEmail(student.getEmail());
-//        studentRegistration.setRollNo(student.getRollNo());
-//        studentRegistration.setCgpa(student.getCgpa());
-//        studentRegistration.setBranch(student.getBranch());
-//        studentRegistration.setSemester(student.getSemester());
         return setDetails(student);
     }
 
@@ -43,7 +35,7 @@ public class StudentDetailsService {
     public StudentRegistrationDto saveDetails(StudentRegistrationDto dto) {
 
         Student student = new Student();
-
+        student.setId(dto.getId());
         student.setName(dto.getStudentName());
         student.setEmail(dto.getEmail());
         student.setRollNo(dto.getRollNo());
@@ -54,5 +46,44 @@ public class StudentDetailsService {
         Student savedStudent = studentRepository.save(student);
 
         return setDetails(savedStudent);
+    }
+
+    public @Nullable StudentRegistrationDto updateDetails(String id, StudentRegistrationDto student) {
+        Student updateStu = studentRepository.findById(id)
+                        .orElseThrow(()-> new RuntimeException("user not found!"));
+
+        if (student.getStudentName() != null) {
+            updateStu.setName(student.getStudentName());
+        }
+
+        if (student.getEmail() != null) {
+            updateStu.setEmail(student.getEmail());
+        }
+
+        if (student.getRollNo() != null) {
+            updateStu.setRollNo(student.getRollNo());
+        }
+
+        if (student.getBranch() != null) {
+            updateStu.setBranch(student.getBranch());
+        }
+
+        if (student.getSemester() != null) {
+            updateStu.setSemester(student.getSemester());
+        }
+
+        if (student.getCgpa() != null) {
+            updateStu.setCgpa(student.getCgpa());
+        }
+        Student updatedStudent = studentRepository.save(updateStu);
+
+        return  setDetails(updatedStudent);
+
+    }
+
+    public void deleteDetails(String id) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Student not found!"));
+        studentRepository.delete(student);
     }
 }
