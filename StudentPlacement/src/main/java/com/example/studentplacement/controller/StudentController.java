@@ -2,6 +2,7 @@ package com.example.studentplacement.controller;
 
 import com.example.studentplacement.dto.StudentRegistrationDto;
 import com.example.studentplacement.service.StudentDetailsService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +20,11 @@ public class StudentController {
       return  new ResponseEntity<>(studentService.getStudentDetails(id),HttpStatus.OK);
     }
     @PostMapping("/save/students")
-    public  ResponseEntity<StudentRegistrationDto> saveDetails(@RequestBody StudentRegistrationDto student){
+    public  ResponseEntity<StudentRegistrationDto> saveDetails(@Valid  @RequestBody StudentRegistrationDto student){
         return ResponseEntity.ok(studentService.saveDetails(student));
     }
     @PutMapping("update/{id}")
-    public ResponseEntity<StudentRegistrationDto> updateDetails(@PathVariable String id, @RequestBody StudentRegistrationDto student){
+    public ResponseEntity<StudentRegistrationDto> updateDetails(@PathVariable String id,@Valid @RequestBody StudentRegistrationDto student){
         return ResponseEntity.ok(studentService.updateDetails(id,student));
     }
     @DeleteMapping("{id}")

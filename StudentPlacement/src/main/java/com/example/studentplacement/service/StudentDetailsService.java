@@ -1,12 +1,16 @@
 package com.example.studentplacement.service;
 
+import com.example.studentplacement.dto.LoginDto;
 import com.example.studentplacement.dto.StudentRegistrationDto;
 import com.example.studentplacement.entity.Student;
 import com.example.studentplacement.repository.StudentRepository;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class StudentDetailsService {
@@ -22,7 +26,6 @@ public class StudentDetailsService {
 
     public StudentRegistrationDto setDetails(Student student){
         StudentRegistrationDto studentRegistration = new StudentRegistrationDto();
-        studentRegistration.setId(student.getId());
         studentRegistration.setStudentName(student.getName());
         studentRegistration.setEmail(student.getEmail());
         studentRegistration.setRollNo(student.getRollNo());
@@ -34,14 +37,18 @@ public class StudentDetailsService {
 
     public StudentRegistrationDto saveDetails(StudentRegistrationDto dto) {
 
+        if(studentRepository.existsByEmail(dto.getEmail())){
+            log.warn("student is already registered",new RuntimeException("student is already registered"));
+        }
+
         Student student = new Student();
-        student.setId(dto.getId());
         student.setName(dto.getStudentName());
         student.setEmail(dto.getEmail());
         student.setRollNo(dto.getRollNo());
         student.setCgpa(dto.getCgpa());
         student.setSemester(dto.getSemester());
         student.setBranch(dto.getBranch());
+        student.setPassword(dto.getPassword());
 
         Student savedStudent = studentRepository.save(student);
 
@@ -86,4 +93,18 @@ public class StudentDetailsService {
                 .orElseThrow(()-> new RuntimeException("Student not found!"));
         studentRepository.delete(student);
     }
+
+    public @Nullable LoginDto studentLogin(@Valid LoginDto data) {
+//        if(!studentRepository.findByEmail(data.getEmail())){
+//            log.error("User is not registered",new RuntimeException("register first"));
+//        }else{
+//
+//        }
+
+
+      return null;
+
+    }
+
+
 }

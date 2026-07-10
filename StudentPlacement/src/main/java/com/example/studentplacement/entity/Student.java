@@ -19,6 +19,8 @@ public class Student {
 
     private String email;
 
+    private String password;
+
     private String rollNo;
 
     @Enumerated(EnumType.STRING)
@@ -27,5 +29,6 @@ public class Student {
     private Double cgpa;
 
     private Integer semester;
+
 
 }
