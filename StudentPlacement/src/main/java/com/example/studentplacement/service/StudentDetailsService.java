@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class StudentDetailsService {
 
+    private final PasswordEncoder passwordEncoder;
     private StudentRepository studentRepository;
 
     public StudentRegistrationDto getStudentDetails(String id) {
@@ -48,7 +50,7 @@ public class StudentDetailsService {
         student.setCgpa(dto.getCgpa());
         student.setSemester(dto.getSemester());
         student.setBranch(dto.getBranch());
-        student.setPassword(dto.getPassword());
+        student.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         Student savedStudent = studentRepository.save(student);
 

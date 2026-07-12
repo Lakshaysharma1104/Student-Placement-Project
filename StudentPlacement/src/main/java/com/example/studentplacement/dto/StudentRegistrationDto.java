@@ -1,6 +1,7 @@
 package com.example.studentplacement.dto;
 
 import com.example.studentplacement.Enum.Branch;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
@@ -32,6 +33,7 @@ public class StudentRegistrationDto {
     private String email;
 
     @NotBlank(message = "Enter a password")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
 
