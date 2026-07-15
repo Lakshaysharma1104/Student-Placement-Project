@@ -10,7 +10,7 @@ spring:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-  security:
-    user:
-      name: lakshay
-      password: lakshay
+
+jwt:
+  secret: "cVrp.1.,&fF.?}j&$yo;9^AB1fMuFK<H#:<qB&DrC@T"
+  expiration: 86400000

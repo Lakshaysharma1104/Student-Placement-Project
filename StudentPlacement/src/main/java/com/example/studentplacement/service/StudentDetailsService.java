@@ -8,6 +8,10 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +21,11 @@ import org.springframework.stereotype.Service;
 public class StudentDetailsService {
 
     private final PasswordEncoder passwordEncoder;
+    private final JWTService jWTService;
     private StudentRepository studentRepository;
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailServiceImpl userDetailsService;
+    private final JWTService jwtService;
 
     public StudentRegistrationDto getStudentDetails(String id) {
 
@@ -96,15 +104,18 @@ public class StudentDetailsService {
         studentRepository.delete(student);
     }
 
-    public @Nullable LoginDto studentLogin(@Valid LoginDto data) {
-//        if(!studentRepository.findByEmail(data.getEmail())){
-//            log.error("User is not registered",new RuntimeException("register first"));
-//        }else{
-//
-//        }
+    public @Nullable String studentLogin(@Valid LoginDto data) {
+           authenticationManager.authenticate(
+                   new UsernamePasswordAuthenticationToken(
+                           data.getEmail(),
+                           data.getPassword()
+                   )
+           );
+        UserDetails userDetails =
+                userDetailsService.loadUserByUsername(data.getEmail());
 
 
-      return null;
+        return jWTService.generateJWTToken(userDetails.getUsername());
 
     }
 

@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("Students-Details")
+@RequestMapping("student-details")
 @AllArgsConstructor
 public class StudentController {
 

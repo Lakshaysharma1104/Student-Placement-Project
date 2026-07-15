@@ -19,7 +19,7 @@ public class PublicController {
     public StudentDetailsService studentService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginDto> studentLogin(@Valid @RequestBody LoginDto data){
+    public ResponseEntity<String> studentLogin(@Valid @RequestBody LoginDto data){
         return  ResponseEntity.ok(studentService.studentLogin(data));
     }
 
