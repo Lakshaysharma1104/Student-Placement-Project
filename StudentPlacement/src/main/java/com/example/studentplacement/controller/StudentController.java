@@ -19,10 +19,10 @@ public class StudentController {
     public ResponseEntity<StudentRegistrationDto> getDetails(@PathVariable String id){
       return  new ResponseEntity<>(studentService.getStudentDetails(id),HttpStatus.OK);
     }
-    @PostMapping("/save/students")
-    public  ResponseEntity<StudentRegistrationDto> saveDetails(@Valid  @RequestBody StudentRegistrationDto student){
-        return ResponseEntity.ok(studentService.saveDetails(student));
-    }
+//    @PostMapping("/save/students")
+//    public  ResponseEntity<StudentRegistrationDto> saveDetails(@Valid  @RequestBody StudentRegistrationDto student){
+//        return ResponseEntity.ok(studentService.saveDetails(student));
+//    }
     @PutMapping("update/{id}")
     public ResponseEntity<StudentRegistrationDto> updateDetails(@PathVariable String id,@Valid @RequestBody StudentRegistrationDto student){
         return ResponseEntity.ok(studentService.updateDetails(id,student));

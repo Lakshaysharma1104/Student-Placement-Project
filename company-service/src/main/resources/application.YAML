@@ -1,0 +1,12 @@
+spring:
+   application:
+     name: company-service
+   datasource:
+     url: jdbc:postgresql://localhost:5432/company-service
+     username: postgres
+     password: shivparvati
+
+   jpa:
+     hibernate:
+       ddl-auto: update
+     database-platform: org.hibernate.dialect.PostgreSQLDialect

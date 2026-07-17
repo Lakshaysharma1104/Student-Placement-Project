@@ -63,7 +63,7 @@ public class JWTService {
         return extractAllClaims(token).getExpiration();
     }
     public boolean isTokenExpired(String token){
-        return extractAllClaims(token).getExpiration().before(new Date());
+        return extractExpiration(token).before(new Date());
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails){
