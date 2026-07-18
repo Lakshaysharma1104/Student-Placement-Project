@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CompanyRepository extends JpaRepository<Company,String> {
     boolean existsByEmail(@Email(message = "Invalid email format") @NotBlank(message = "Email is required") String email) ;
+
+    boolean existsByCompanyName(@NotBlank(message = "Company name is required") String companyName);
 }
