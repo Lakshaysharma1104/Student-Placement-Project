@@ -1,22 +1,36 @@
 package com.companyservice.companyservice.service;
 
+import com.companyservice.companyservice.Enum.Role;
 import com.companyservice.companyservice.dto.CompanyRequestDto;
 import com.companyservice.companyservice.dto.CompanyResponseDto;
+import com.companyservice.companyservice.dto.Login;
 import com.companyservice.companyservice.entity.Company;
 import com.companyservice.companyservice.repository.CompanyRepository;
+import com.companyservice.companyservice.security.SecurityConfig;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class CompanyService {
 
+    private final SecurityConfig securityConfig;
+    private final AuthenticationManager authenticationManager;
     private final CompanyRepository repository;
+    private final UserDetailServiceImp userDetailsService;
+    private final JWTService jWTService;
+
+
     public  CompanyResponseDto getCompanyDetails(String id) {
           Company company = repository.findById(id)
                   .orElseThrow(()->new RuntimeException("company not found"));
@@ -50,25 +64,13 @@ public class CompanyService {
             company.setDescription(data.getDescription());
             company.setLocation(data.getLocation());
             company.setWebsite(data.getWebsite());
-            company.setPassword(data.getPassword());
+            company.setRole(Role.ROLE_COMPANY);
+            company.setPassword(securityConfig.passwordEncoder().encode(data.getPassword()));
 
 
           repository.save(company);
         return convertToResponseDto(company);
     }
-
-//    public CompanyResponseDto convertReqToResponseDto(CompanyRequestDto data) {
-//        CompanyResponseDto company = new CompanyResponseDto();
-//
-//        company.setCompanyName(data.getCompanyName());
-//        company.setEmail(data.getEmail());
-//        company.setPhone(data.getPhone());
-//        company.setDescription(data.getDescription());
-//        company.setLocation(data.getLocation());
-//        company.setWebsite(data.getWebsite());
-////        company.setPassword(data.getPassword());
-//        return company;
-//    }
 
     public @Nullable List<CompanyResponseDto> getAllCompanies() {
         List<Company> companies = repository.findAll();
@@ -82,9 +84,6 @@ public class CompanyService {
         Company company= repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("company not found"));
 
-
-//        company.setCompanyName(data.getCompanyName());
-//        company.setEmail(data.getEmail());
         company.setPhone(data.getPhone());
         company.setDescription(data.getDescription());
         company.setLocation(data.getLocation());
@@ -103,5 +102,17 @@ public class CompanyService {
         }
 
         repository.deleteById(id);
+    }
+
+    public String companyLogin(@Valid Login data) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        data.getEmail(),
+                        data.getPassword()
+                )
+        );
+        UserDetails userDetails =  userDetailsService.loadUserByUsername(data.getEmail());
+        return jWTService.generateToken(userDetails.getUsername());
+
     }
 }

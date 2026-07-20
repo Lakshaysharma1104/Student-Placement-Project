@@ -1,6 +1,7 @@
 package com.example.studentplacement.entity;
 
 import com.example.studentplacement.Enum.Branch;
+import com.example.studentplacement.Enum.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,6 +30,8 @@ public class Student {
     private Double cgpa;
 
     private Integer semester;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
 
 }

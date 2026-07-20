@@ -1,5 +1,6 @@
 package com.example.studentplacement.service;
 
+import com.example.studentplacement.Enum.Role;
 import com.example.studentplacement.dto.LoginDto;
 import com.example.studentplacement.dto.StudentRegistrationDto;
 import com.example.studentplacement.entity.Student;
@@ -15,17 +16,19 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @Service
 @AllArgsConstructor
 public class StudentDetailsService {
 
     private final PasswordEncoder passwordEncoder;
-    private final JWTService jWTService;
+    private final JWTService jwtService;
     private StudentRepository studentRepository;
     private final AuthenticationManager authenticationManager;
     private final UserDetailServiceImpl userDetailsService;
-    private final JWTService jwtService;
 
     public StudentRegistrationDto getStudentDetails(String id) {
 
@@ -34,7 +37,7 @@ public class StudentDetailsService {
         return setDetails(student);
     }
 
-    public StudentRegistrationDto setDetails(Student student){
+    public  StudentRegistrationDto setDetails(Student student){
         StudentRegistrationDto studentRegistration = new StudentRegistrationDto();
         studentRegistration.setStudentName(student.getName());
         studentRegistration.setEmail(student.getEmail());
@@ -58,6 +61,7 @@ public class StudentDetailsService {
         student.setCgpa(dto.getCgpa());
         student.setSemester(dto.getSemester());
         student.setBranch(dto.getBranch());
+        student.setRole(Role.ROLE_STUDENT);
         student.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         Student savedStudent = studentRepository.save(student);
@@ -115,9 +119,20 @@ public class StudentDetailsService {
                 userDetailsService.loadUserByUsername(data.getEmail());
 
 
-        return jWTService.generateJWTToken(userDetails.getUsername());
+        return jwtService.generateJWTToken(userDetails.getUsername());
 
     }
 
 
+    public @Nullable List<StudentRegistrationDto> getAllStudentDetails() {
+        List<Student> students = studentRepository.findAll();
+        if(students.isEmpty()){
+            throw new RuntimeException("student not found");
+        }
+        return students.stream()
+                .map(this::setDetails)
+                .toList();
+
+
+    }
 }

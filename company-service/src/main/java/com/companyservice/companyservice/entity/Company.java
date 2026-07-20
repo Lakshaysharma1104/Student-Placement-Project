@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import com.companyservice.companyservice.Enum.Role;
 import java.time.LocalDateTime;
 
 @Entity
@@ -49,6 +49,9 @@ public class Company {
 
     @Column(length = 1000)
     private String description;
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
 
     @Column(updatable = false)
     private LocalDateTime createdAt;

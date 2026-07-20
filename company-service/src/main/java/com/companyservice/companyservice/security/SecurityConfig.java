@@ -1,7 +1,7 @@
-package com.example.studentplacement.security;
+package com.companyservice.companyservice.security;
 
-import com.example.studentplacement.filter.JWTAuthenticationFilter;
-import com.example.studentplacement.service.UserDetailServiceImpl;
+import com.companyservice.companyservice.filter.JWTFilter;
+import com.companyservice.companyservice.service.JWTService;
 import jakarta.servlet.Filter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -15,41 +15,48 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.session.SessionManagementFilter;
-@AllArgsConstructor
-@EnableWebSecurity
+
 @Configuration
-public class SpringSecurity {
-    private UserDetailServiceImpl userDetailService;
-    private JWTAuthenticationFilter jwtAuthenticationFilter;
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws  Exception{
+@EnableWebSecurity
+@AllArgsConstructor
+public class SecurityConfig {
 
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request
-                        .requestMatchers("/public/**").permitAll()
-                        .requestMatchers("/student-details/**").hasAuthority("ROLE_STUDENT")
-                        .anyRequest().authenticated())
+    public final UserDetailsService userDetailsService;
+
+    private final JWTFilter jwtFilter;
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        return http.
+                csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(request->{
+                    request.requestMatchers("/company/register","/company/login").permitAll()
+                            .requestMatchers("/company/**").hasAuthority("ROLE_COMPANY")
+                            .anyRequest().authenticated();
+                })
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).
-                build();
-    }
-   @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception{
-       return configuration.getAuthenticationManager();
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .build();
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailService);
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception{
+        return configuration.getAuthenticationManager();
+    }
+
+
+    @Bean
+    public AuthenticationProvider  authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
+
     }
 
     @Bean

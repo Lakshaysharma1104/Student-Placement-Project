@@ -5,7 +5,6 @@ import com.example.studentplacement.repository.StudentRepository;
 
 import lombok.AllArgsConstructor;
 import org.jspecify.annotations.NullMarked;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,8 +14,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailServiceImpl implements UserDetailsService {
     private final StudentRepository studentRepository;
-    @Override
     @NullMarked
+    @Override
     public  UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
          Student student = studentRepository.findByEmail(username);
          if(student!=null) {
@@ -24,7 +23,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
                      .builder()
                      .username(student.getEmail())
                      .password(student.getPassword())
-                     .roles("USER")
+                     .roles("STUDENT")
                      .build();
          }
          throw new UsernameNotFoundException("email not found"+username);

@@ -3,6 +3,7 @@ package com.companyservice.companyservice.controller;
 
 import com.companyservice.companyservice.dto.CompanyRequestDto;
 import com.companyservice.companyservice.dto.CompanyResponseDto;
+import com.companyservice.companyservice.dto.Login;
 import com.companyservice.companyservice.service.CompanyService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -30,6 +31,11 @@ public class CompanyController {
     @PostMapping("/register")
     public ResponseEntity<CompanyResponseDto> registerCompany(@RequestBody  @Valid  CompanyRequestDto data){
         return ResponseEntity.ok(companyService.registerCompany(data));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody @Valid  Login data){
+        return ResponseEntity.ok(companyService.companyLogin(data));
     }
     @PutMapping("/update/{id}")
     public ResponseEntity<CompanyResponseDto> updateCompany(@RequestBody   CompanyRequestDto data, @PathVariable String id){
